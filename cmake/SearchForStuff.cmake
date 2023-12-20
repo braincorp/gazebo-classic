@@ -688,15 +688,20 @@ else (NOT libdl_library)
 endif ()
 
 ########################################
-# Find gdal
-include (FindGDAL)
-if (NOT GDAL_FOUND)
-  message (STATUS "Looking for libgdal - not found")
-  BUILD_WARNING ("GDAL not found, Digital elevation terrains support will be disabled.")
+set (DISABLE_GDAL OFF CACHE BOOL "Force disable GDAL")
+if (DISABLE_GDAL)
+  message (STATUS "GDAL disabled by user request, Digital elevation terrains support will be disabled.")
   set (HAVE_GDAL OFF CACHE BOOL "HAVE GDAL" FORCE)
 else ()
-  message (STATUS "Looking for libgdal - found")
-  set (HAVE_GDAL ON CACHE BOOL "HAVE GDAL" FORCE)
+  # Find gdal
+  include (FindGDAL)
+  if (NOT GDAL_FOUND)
+    message (STATUS "Looking for libgdal - not found")
+    BUILD_WARNING ("GDAL not found, Digital elevation terrains support will be disabled.")
+    set (HAVE_GDAL OFF CACHE BOOL "HAVE GDAL" FORCE)
+  else ()
+    message (STATUS "Looking for libgdal - found")
+   endif ()
 endif ()
 
 ########################################
